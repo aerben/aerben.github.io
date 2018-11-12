@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang=En>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="IntroductionIn the recent part 1 of this series, we published a docker image containing a simple microservice to to the AWS Elastic Container Registry (ECR).ECR can be used like any other Docker regis">
+<meta name="keywords" content="aws,docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deploy a Java app as Docker container on AWS with Maven (Part 2)">
+<meta property="og:url" content="https://www.aerben.me/2017/docker-maven-2/index.html">
+<meta property="og:site_name" content="aerben.me">
+<meta property="og:description" content="IntroductionIn the recent part 1 of this series, we published a docker image containing a simple microservice to to the AWS Elastic Container Registry (ECR).ECR can be used like any other Docker regis">
+<meta property="og:locale" content="English">
+<meta property="og:updated_time" content="2018-11-12T09:32:12.259Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Deploy a Java app as Docker container on AWS with Maven (Part 2)">
+<meta name="twitter:description" content="IntroductionIn the recent part 1 of this series, we published a docker image containing a simple microservice to to the AWS Elastic Container Registry (ECR).ECR can be used like any other Docker regis">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Deploy a Java app as Docker container on AWS with Maven (Part 2)</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/imprint/">Imprint/Impressum</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/dynamodb-global-secondary-index-autoscaling/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/docker-maven-1/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://www.aerben.me/2017/docker-maven-2/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://www.aerben.me/2017/docker-maven-2/&text=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://www.aerben.me/2017/docker-maven-2/&is_video=false&description=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Deploy a Java app as Docker container on AWS with Maven (Part 2)&body=Check out this article: https://www.aerben.me/2017/docker-maven-2/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://www.aerben.me/2017/docker-maven-2/&name=Deploy a Java app as Docker container on AWS with Maven (Part 2)&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Prerequisite-An-existing-ECR-registry-with-images"><span class="toc-number">2.</span> <span class="toc-text">Prerequisite: An existing ECR registry with images</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Provide-an-AWS-EC2-key-pair"><span class="toc-number">3.</span> <span class="toc-text">Provide an AWS EC2 key pair</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Create-a-security-group"><span class="toc-number">4.</span> <span class="toc-text">Create a security group</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Run-an-EC2-instance"><span class="toc-number">5.</span> <span class="toc-text">Run an EC2 instance</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Connect-to-the-instance-and-install-docker"><span class="toc-number">6.</span> <span class="toc-text">Connect to the instance and install docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Authenticate-docker-with-ECR-and-run-the-image"><span class="toc-number">7.</span> <span class="toc-text">Authenticate docker with ECR and run the image</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">8.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Deploy a Java app as Docker container on AWS with Maven (Part 2)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Alexander Erben</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-12-02T13:07:46.000Z" itemprop="datePublished">2017-12-02</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/aws/">aws</a>, <a class="tag-link" href="/tags/docker/">docker</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>In the recent <a href="../docker-maven-1">part 1</a> of this series, we published a docker image containing a simple microservice to to the AWS Elastic Container Registry (ECR).<br>ECR can be used like any other Docker registry to pull images and run them on any authenticated EC2 instance.</p>
+<p>This article describes the necessary steps to provide a minimal EC2 instance that can run a docker container from an image in ECR. The instance is set up via the AWS CLI tools, and <em>not</em> using the Web Console, on purpose. As soon as you want to go serious with your AWS endeavours, the UI won’t be of much use - interaction with it cannot be feasibly automated. So, we prefer the CLI as it can be used in your setup scripts.</p>
+<h2 id="Prerequisite-An-existing-ECR-registry-with-images"><a href="#Prerequisite-An-existing-ECR-registry-with-images" class="headerlink" title="Prerequisite: An existing ECR registry with images"></a>Prerequisite: An existing ECR registry with images</h2><p>This article assumes that you have already pushed a docker image to an ECR registry in your AWS account. You should read <a href="../docker-maven-1">part 1</a> of the series, where you will create a maven project that pushes docker images to ECR. You can also read the <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_GetStarted.html" target="_blank" rel="noopener">getting started</a> guide on AWS ECR and push an image to your registry.</p>
+<h2 id="Provide-an-AWS-EC2-key-pair"><a href="#Provide-an-AWS-EC2-key-pair" class="headerlink" title="Provide an AWS EC2 key pair"></a>Provide an AWS EC2 key pair</h2><p>Our docker container will be deployed on EC2, so naturally, we have to provide an instance. But there’s a lot more to it: The EC2 instance must be accessible for us via SSH and HTTP, it must run the docker agent and have access to ECR where our docker images reside.</p>
+<p>First things first: To be able to log in into our instance later on, we first have to create a key pair. If you already have a key pair registered on your AWS account, you can safely skip this section.<br>To create an AWS key pair for your account, follow along the instructions given by the <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-keypairs.html#creating-a-key-pair" target="_blank" rel="noopener">AWS documentation</a>. On UNIX-like systems, the command is as follows:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ aws ec2 create-key-pair --key-name MyKeyPair --query &apos;KeyMaterial&apos; --output text &gt; MyKeyPair.pem</span><br><span class="line">$ chmod 400 MyKeyPair.pem</span><br></pre></td></tr></table></figure>
+<p>Remember the location where you stored the key file. You will need it later.</p>
+<h2 id="Create-a-security-group"><a href="#Create-a-security-group" class="headerlink" title="Create a security group"></a>Create a security group</h2><p>By default, any EC2 instance you create won’t be accessible from your local machine. We will have to make sure you can log in to the instance via SSH to install docker and run images. Access must be granted over port 22 for SSH and, in case you use the docker image created in the <a href="../docker-maven-1">last article</a>, port 8080 for the web application. </p>
+<p>This article will not go into great detail on AWS networking. The instance as well as all associated networking resources will be deployed in the account’s default VPC. If you don’t yet know what a VPC is, that’s fine - think of it as an isolated network in the AWS cloud where you can safely run your EC2 instances.</p>
+<p>To open up the necessary ports for access from your local machine, we will use security groups. A security group in AWS behaves like a firewall preventing or granting access to your instances to a range of source IP addresses, protocols and ports. In our example, we need TCP over port 22 for SSH and TCP over port 8080 for HTTP from the IP address of your computer - or, if you don’t know your IP address and are lazy, for the whole world.</p>
+<p>To create a security group, use the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ aws ec2 create-security-group --group-name DockerHostSecurityGroup --description &quot;A security group for the docker tutorial on aerben.me&quot;</span><br></pre></td></tr></table></figure>
+<p>Then go ahead and allow access for ports 22 and 8080 over TCP. The given commands will allow access to every source IP address by specifying the CIDR block  <code>0.0.0.0/0</code>. If you know your public IP address or a range in which it will be, you can and should substitute the appropriate CIDR range.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ aws ec2 authorize-security-group-ingress --group-name DockerHostSecurityGroup --protocol tcp --port 22 --cidr &quot;0.0.0.0/0&quot;</span><br><span class="line">$ aws ec2 authorize-security-group-ingress --group-name DockerHostSecurityGroup --protocol tcp --port 8080 --cidr &quot;0.0.0.0/0&quot;</span><br></pre></td></tr></table></figure>
+<p>That’s all. We don’t have to explicitly set egress (“outbound”) rules because security groups in AWS are <em>stateful</em>. In simple terms, that means that all traffic that has been allowed in is also allowed back out. </p>
+<p>The security group is now ready to use for the EC2 instance.</p>
+<h2 id="Run-an-EC2-instance"><a href="#Run-an-EC2-instance" class="headerlink" title="Run an EC2 instance"></a>Run an EC2 instance</h2><p>Now that we have all prerequisites in place, actually creating the instance is pleasantly simple. </p>
+<p>All you need is the key and the security group you just created and a so-called Amazon Machine Image (AMI) ID. This is the image used to create the boot volume of your instance. The example below uses the AMI for Amazon Linux in the EU (Frankfurt) region. You can look up the Amazon Machine Image for your region <a href="https://aws.amazon.com/de/amazon-linux-ami/" target="_blank" rel="noopener">here</a>. Be sure to use the “HVM (SSD) EBS-backed 64 Bit” AMI.<br>The command to run a free-tier eligible instance is as follows:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ aws ec2 run-instances --image-id ami-5652ce39 --count 1 --instance-type t2.micro --key-name MyKeyPair --security-groups DockerHostSecurityGroup</span><br></pre></td></tr></table></figure>
+<p>We will now have to wait until the instance comes alive. The following command will tell you the current state of your instance as well as its public IP address and Instance ID, both of which we will soon need:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ aws ec2 describe-instances --query &quot;Reservations[*].Instances[*].[InstanceId,PublicIpAddress,State.Name]&quot;</span><br><span class="line">[</span><br><span class="line">    [</span><br><span class="line">        [</span><br><span class="line">            &quot;i-0c701dac19ec55138&quot;,</span><br><span class="line">            &quot;54.93.100.114&quot;,</span><br><span class="line">            &quot;running&quot;</span><br><span class="line">        ]</span><br><span class="line">    ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>As soon as the EC2 instance state switches to “running”, you can continue with the tutorial. </p>
+<h2 id="Connect-to-the-instance-and-install-docker"><a href="#Connect-to-the-instance-and-install-docker" class="headerlink" title="Connect to the instance and install docker"></a>Connect to the instance and install docker</h2><p>The EC2 instance is now running, so we should now go ahead and connect to it via SSH. Note that the “running” state of an EC2 instance just means that the virtual machine has started - the OS itself might still be booting up. That means that you might still have to wait some minutes to be able to connect to the server.</p>
+<p>The default user for Amazon Linux is <code>ec2-user</code>, so given the private key file you created above and the public IP address of your instance, you can open up the connection as follows:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -i MyKeyPair.pem ec2-user@35.158.97.195</span><br><span class="line">  The authenticity of host &apos;35.158.97.195 (35.158.97.195)&apos; can&apos;t be established.</span><br><span class="line">  ECDSA key fingerprint is SHA256:UJlSED90KpQRAwc1QMATbj/RFjQZ5DZRsyY65Lt9czE.</span><br><span class="line">  Are you sure you want to continue connecting (yes/no)? </span><br><span class="line">  </span><br><span class="line">  yes</span><br><span class="line">  </span><br><span class="line">  Warning: Permanently added &apos;35.158.97.195&apos; (ECDSA) to the list of known hosts.</span><br><span class="line">  </span><br><span class="line">         __|  __|_  )</span><br><span class="line">         _|  (     /   Amazon Linux AMI</span><br><span class="line">        ___|\___|___|</span><br><span class="line">  </span><br><span class="line">  https://aws.amazon.com/amazon-linux-ami/2017.09-release-notes/</span><br><span class="line">  1 package(s) needed for security, out of 1 available</span><br><span class="line">  Run &quot;sudo yum update&quot; to apply all updates.</span><br></pre></td></tr></table></figure>
+<p>You should now run <code>sudo yum update -y</code> to install all updates.<br>Next, we need to install and start docker on our EC2 instance. Using yum, this isn’t hard at all:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install -y docker</span><br><span class="line">$ sudo service docker start</span><br></pre></td></tr></table></figure>
+<p>This will install docker on your machine. Now, the last thing we have to do is download and run the image and were done… right?<br>It’s not that simple. If we try to deploy the image via ECR (remember to replace the account id), the following will happen:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run -p 8080:8080 [[ACCOUNT_ID]].dkr.ecr.eu-central-1.amazonaws.com/spark-sample-service:1.0</span><br><span class="line"></span><br><span class="line">Unable to find image &apos;427866372521.dkr.ecr.eu-central-1.amazonaws.com/spark-sample-service:1.0&apos; locally</span><br><span class="line">docker: Error response from daemon: Get https://427866372521.dkr.ecr.eu-central-1.amazonaws.com/v2/spark-sample-service/manifests/1.0: no basic auth credentials.</span><br><span class="line">See &apos;docker run --help&apos;.</span><br></pre></td></tr></table></figure>
+<p>Oh yeah, we’ve seen that already in the last article. We need to perform a docker login against ECR to pull an image.</p>
+<h2 id="Authenticate-docker-with-ECR-and-run-the-image"><a href="#Authenticate-docker-with-ECR-and-run-the-image" class="headerlink" title="Authenticate docker with ECR and run the image"></a>Authenticate docker with ECR and run the image</h2><p>If you have read the last article, this is no news for you: for the instance to gain access to ECR, you must first authenticate docker against the registry.<br>To that end, use the AWS ECR tools to retrieve credentials for logging in. The <code>get-login</code> command returns a ready-to-use command for <code>docker login</code> to authenticate.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ aws ecr get-login --no-include-email</span><br><span class="line">docker login -u AWS -p PASSWORD -e none https://[[ACCOUNT_ID]].dkr.ecr.eu-central-1.amazonaws.com</span><br></pre></td></tr></table></figure>
+<p>Then at last, start a container from your image</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run -p 8080:8080 [[ACCOUNT_ID]].dkr.ecr.eu-central-1.amazonaws.com/spark-sample-service:1.0`</span><br><span class="line"></span><br><span class="line">Unable to find image &apos;427866372521.dkr.ecr.eu-central-1.amazonaws.com/spark-sample-service:1.0&apos; locally</span><br><span class="line">1.0: Pulling from spark-sample-service</span><br><span class="line">ff3a5c916c92: Pull complete</span><br><span class="line">5de5f69f42d7: Pull complete</span><br><span class="line">fa7536dd895a: Pull complete</span><br><span class="line">fa92dd14eb3f: Pull complete</span><br><span class="line">be90dab9ef0a: Pull complete</span><br><span class="line">Digest: sha256:969cef8230f2bf5dd1c03a65c0af1372e7c81930c1c26caa70027dda80ec605f</span><br><span class="line">Status: Downloaded newer image for 427866372521.dkr.ecr.eu-central-1.amazonaws.com/spark-sample-service:1.0</span><br><span class="line">[Thread-0] INFO org.eclipse.jetty.util.log - Logging initialized @433ms</span><br><span class="line">[Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - == Spark has ignited ...</span><br><span class="line">[Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - &gt;&gt; Listening on 0.0.0.0:8080</span><br><span class="line">[Thread-0] INFO org.eclipse.jetty.server.Server - jetty-9.3.6.v20151106</span><br><span class="line">[Thread-0] INFO org.eclipse.jetty.server.ServerConnector - Started ServerConnector@46a08f0f&#123;HTTP/1.1,[http/1.1]&#125;&#123;0.0.0.0:8080&#125;</span><br><span class="line">[Thread-0] INFO org.eclipse.jetty.server.Server - Started @650ms</span><br></pre></td></tr></table></figure>
+<p>and verify your setup by calling your service via the instance’s public IP address:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl 35.158.97.195:8080</span><br><span class="line">It&apos;s me!</span><br></pre></td></tr></table></figure>
+<p>And that’s it!</p>
+<p>Don’t forget to terminate your instance as soon as you are done:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws ec2 terminate-instances  --instance-ids i-0408fef6a295da99e</span><br></pre></td></tr></table></figure>
+<p>Replace the instance id with the one of your own instance.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Over the course of the last two articles, we’ve learned a lot:</p>
+<ul>
+<li>Packaging a Java application as docker image with the Spotify Dockerfile Maven Plugin</li>
+<li>Authenticate Docker against the AWS Elastic Container Registry (ECR)</li>
+<li>Pulling and running images from ECR</li>
+<li>Creating AWS EC2 key pairs</li>
+<li>Granting network access to EC2 instances via security groups</li>
+<li>Starting and terminating EC2 instances via the command line</li>
+</ul>
+<p>I hope you’ve enjoyed the series and am glad to hear your feedback in the comments section below!</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archives</a></li>
+        
+          <li><a href="/imprint/">Imprint/Impressum</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol>
+          <ol>
+            <li class="toc-item toc-level-2"><a class="toc-link" href="#"> Start</a></li>
+          </ol>
+          <li>
+          <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Prerequisite-An-existing-ECR-registry-with-images"><span class="toc-number">2.</span> <span class="toc-text">Prerequisite: An existing ECR registry with images</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Provide-an-AWS-EC2-key-pair"><span class="toc-number">3.</span> <span class="toc-text">Provide an AWS EC2 key pair</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Create-a-security-group"><span class="toc-number">4.</span> <span class="toc-text">Create a security group</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Run-an-EC2-instance"><span class="toc-number">5.</span> <span class="toc-text">Run an EC2 instance</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Connect-to-the-instance-and-install-docker"><span class="toc-number">6.</span> <span class="toc-text">Connect to the instance and install docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Authenticate-docker-with-ECR-and-run-the-image"><span class="toc-number">7.</span> <span class="toc-text">Authenticate docker with ECR and run the image</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">8.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+          </li>
+      </ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://www.aerben.me/2017/docker-maven-2/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://www.aerben.me/2017/docker-maven-2/&text=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://www.aerben.me/2017/docker-maven-2/&is_video=false&description=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Deploy a Java app as Docker container on AWS with Maven (Part 2)&body=Check out this article: https://www.aerben.me/2017/docker-maven-2/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://www.aerben.me/2017/docker-maven-2/&title=Deploy a Java app as Docker container on AWS with Maven (Part 2)"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://www.aerben.me/2017/docker-maven-2/&name=Deploy a Java app as Docker container on AWS with Maven (Part 2)&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Alexander Erben
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/imprint/">Imprint/Impressum</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
